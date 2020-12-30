@@ -1,0 +1,154 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    front_host: '%env(resolve:FRONT_HOST)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Fixtures\:
+        resource: '../src/Fixtures/*'
+        tags: [ 'doctrine.fixture.orm' ]
+
+    App\Infrastructure\Exceptions\JsonExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    _instanceof:
+        # Add the console.command tag to all services defined in this file having this type
+        App\DependencyInjection\SecurityAwareInterface:
+            calls:
+                - [ setAccessViewChecker, [ '@App\Security\IncidentAccessViewChecker' ] ]
+                - [ setUserRepository, [ '@App\Repository\Security\UserRepository' ] ]
+
+        App\ReadModel\ReadModelBuilder\RelationRegistry\RelationLoaderInterface:
+            tags: [ 'read.relation.loader' ]
+            lazy: true
+
+        App\ReadModel\ReadModelBuilder\DTOBuilder\DTOBuilderInterface:
+            tags: [ 'read.dto.builder' ]
+            lazy: true
+
+        App\UserActions\ContextFree\ContextFreeUserActionInterface:
+            tags: [ 'user.action.context.free' ]
+
+        App\UserActions\IncidentContext\IncidentContextUserActionInterface:
+            tags: [ 'user.action.context.incident' ]
+
+        App\UserActions\IncidentActionContext\IncidentActionContextUserActionInterface:
+            tags: [ 'user.action.context.incident.action' ]
+
+        App\UserActions\IncidentActionTaskContext\IncidentActionTaskContextUserActionInterface:
+            tags: [ 'user.action.context.incident.action.task' ]
+
+        App\Domain\Incident\IncidentStatusInterface:
+            tags: [ 'incident.status' ]
+            lazy: true
+
+        App\Domain\Action\ActionStatusInterface:
+            tags: [ 'action.status' ]
+            lazy: true
+
+        App\Domain\ActionTask\ActionTaskStatusInterface:
+            tags: [ 'action.task.status' ]
+            lazy: true
+
+        App\Domain\ActionTask\ActionTaskTypeInterface:
+            tags: [ 'action.task.type' ]
+            lazy: true
+
+        App\Domain\ActionTask\ActionTaskTypeHandlerInterface:
+            tags: [ 'action.task.type.handler' ]
+            lazy: true
+
+        App\Domain\Incident\IncidentTypeHandlerInterface:
+            tags: [ 'incident.type.handler' ]
+            lazy: true
+
+        App\Modules\Notification\NotificationHandlerInterface:
+            tags: [ 'user.action.notification_handler' ]
+            lazy: true
+
+        App\Modules\Export\EAV\EAVExporterInterface:
+            tags: [ 'export.eav.exporter' ]
+            lazy: true
+
+    App\ReadModel\ReadModelBuilder\RelationRegistry\RelationsLoadersLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'read.relation.loader' }
+    App\ReadModel\ReadModelBuilder\DTOBuilder\DTOBuilderLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'read.dto.builder'}
+
+    App\UserActions\ContextFree\ContextFreeUserActionsLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'user.action.context.free' }
+
+    App\UserActions\IncidentContext\IncidentContextUserActionsLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'user.action.context.incident' }
+
+    App\UserActions\IncidentActionContext\IncidentActionContextUserActionsLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'user.action.context.incident.action' }
+
+    App\UserActions\IncidentActionTaskContext\IncidentActionTaskContextUserActionsLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'user.action.context.incident.action.task' }
+
+    App\Modules\Notification\NotificationHandlerLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'user.action.notification_handler' }
+
+    App\Modules\Export\EAV\EAVExportersLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'export.eav.exporter' }
+
+    App\Domain\Incident\IncidentStatusLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'incident.status', index_by: 'key', default_index_method: 'getCode' }
+
+    App\Domain\Action\ActionStatusLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'action.status', index_by: 'key', default_index_method: 'getCode' }
+
+    App\Domain\ActionTask\ActionTaskStatusLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'action.task.status', index_by: 'key', default_index_method: 'getCode' }
+
+    App\Domain\ActionTask\ActionTaskTypeLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'action.task.type', index_by: 'key', default_index_method: 'getCode' }
+
+    App\Domain\ActionTask\ActionTaskTypeHandlerLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'action.task.type.handler', index_by: 'key', default_index_method: 'getCode' }
+
+    App\Domain\Incident\IncidentTypeHandlerLocator:
+        arguments:
+            $locator: !tagged_locator { tag: 'incident.type.handler', index_by: 'key', default_index_method: 'getCode' }

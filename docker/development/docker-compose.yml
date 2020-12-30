@@ -1,0 +1,57 @@
+version: '3.4'
+
+services:
+  php:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    command: bash -c "/opt/entrypoint-dev.sh ${CURRENT_GID} ${CURRENT_UID} && /opt/php-fpm.sh"
+    volumes:
+      - ${PWD}:/var/www/html/
+    env_file:
+      - ./.env
+      - ./.env.override
+  nginx:
+    image: ${CI_REGISTRY_IMAGE}/nginx:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    depends_on:
+      - php
+    ports:
+      - ${FREE_INTERFACE_NGINX}:80
+    volumes:
+      - ${PWD}/public:/var/www/html/public
+  postgres:
+    image: ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_REF_SLUG}
+    restart: ${RESTART}
+    ports:
+      - ${FREE_INTERFACE_POSTGRES}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  composer:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    depends_on:
+      - php
+    command: bash -c "/opt/entrypoint-dev.sh ${CURRENT_GID} ${CURRENT_UID} && /opt/composer.sh /var/www/html"
+    volumes:
+      - ${PWD}:/var/www/html/
+    env_file:
+      - ./.env
+      - ./.env.override
+  redis:
+    image: "redis:alpine"
+    restart: ${RESTART}
+    command:
+      - 'redis-server'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+  rabbitmq:
+    hostname: 'rabbitmq'
+    image: ${CI_REGISTRY_IMAGE}/rabbitmq:${CI_COMMIT_REF_SLUG}
+    restart: ${RESTART}
+    ports:
+      - ${FREE_INTERFACE_RABBITMQ}:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}

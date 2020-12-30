@@ -1,0 +1,4 @@
+services:
+  TelegramNotificationBundle\Services\Client\TelegramStubClient: ~
+
+  TelegramNotificationBundle\Services\Client\TelegramClientInterface: '@TelegramNotificationBundle\Services\Client\TelegramStubClient'

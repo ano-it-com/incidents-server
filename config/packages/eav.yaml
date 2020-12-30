@@ -1,0 +1,147 @@
+eav:
+    base_tables:
+        entity:
+            table:                eav_entity
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVEntity
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                external_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\IntType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type:
+            table:                eav_type
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVType
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                alias:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                title:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_property:
+            table:                eav_type_property
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypeProperty
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                value_type:          ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\IntType
+                alias:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                title:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        values:
+            table:                eav_values
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVEntityPropertyValue
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                entity_id:           ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_property_id:    ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                value_text:          ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                value_int:           ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\IntType
+                value_decimal:       ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\DecimalType
+                value_bool:          ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BoolType
+                value_datetime:      
+                    - ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\DateType
+                    - ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\DateTimeType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        entity_relation:
+            table:                eav_entity_relation
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVEntityRelation
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                from_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                to_id:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        entity_relation_type:
+            table:                eav_entity_relation_type
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVEntityRelationType
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                alias:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                title:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        entity_relation_type_restriction:
+            table:                eav_entity_relation_type_restriction
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVEntityRelationTypeRestriction
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                entity_relation_type_id: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction_type_code: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction:         ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\JsonType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_relation:
+            table:                eav_type_relation
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypeRelation
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                from_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                to_id:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_relation_type:
+            table:                eav_type_relation_type
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypeRelationType
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                alias:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                title:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_relation_type_restriction:
+            table:                eav_type_relation_type_restriction
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypeRelationTypeRestriction
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_relation_type_id: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction_type_code: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction:         ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\JsonType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_property_relation:
+            table:                eav_type_property_relation
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypePropertyRelation
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                from_id:             ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                to_id:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_property_relation_type:
+            table:                eav_type_property_relation_type
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypePropertyRelationType
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                alias:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                title:               ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType
+        type_property_relation_type_restriction:
+            table:                eav_type_property_relation_type_restriction
+            class:                ANOITCOM\EAVBundle\EAV\ORM\Entity\EAVTypePropertyRelationTypeRestriction
+            columns:
+
+                # Defaults:
+                id:                  ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                type_property_relation_type_id: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction_type_code: ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\TextType
+                restriction:         ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\JsonType
+                meta:                ANOITCOM\EAVBundle\EAV\ORM\DBAL\Types\BasicJsonMetaType

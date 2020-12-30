@@ -1,0 +1,11 @@
+front.incident.view:
+  path: /incidents/{id}/
+  host: '%front_host%'
+  methods: [GET]
+  schemes: [http]
+
+front.incident.action.view:
+  path: /incidents/{incidentId}/action/{actionId}/
+  host: '%front_host%'
+  methods: [GET]
+  schemes: [http]

@@ -1,0 +1,15 @@
+services:
+  TelegramNotificationBundle\Services\Client\TelegramHttpClient:
+    arguments: [
+        'https://api.telegram.org',
+        '%env(resolve:BOT_TOKEN)%',
+        '@Psr\Log\LoggerInterface'
+    ]
+
+  TelegramNotificationBundle\Services\Wrapper\TelegramSingleChatWrapper:
+    arguments: [
+        '@TelegramNotificationBundle\Services\Client\TelegramHttpClient',
+        '-322056671'
+    ]
+
+  TelegramNotificationBundle\Services\Client\TelegramClientInterface: '@TelegramNotificationBundle\Services\Wrapper\TelegramSingleChatWrapper'

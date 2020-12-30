@@ -1,0 +1,5 @@
+framework:
+    messenger:
+        transports:
+            notification: 'sync://'
+            telegram: 'sync://'

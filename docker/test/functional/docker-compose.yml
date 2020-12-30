@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  php:
+    container_name: ${COMPOSE_PROJECT_NAME}_test_php
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    env_file:
+      - .env
+    command: "/opt/test-functional.sh"
+    depends_on:
+      - postgres
+  postgres:
+    container_name: ${COMPOSE_PROJECT_NAME}_test_postgres
+    image: ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_REF_SLUG}
+    restart: ${RESTART}
+    env_file:
+      - .env

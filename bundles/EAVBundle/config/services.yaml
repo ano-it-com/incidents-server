@@ -1,0 +1,27 @@
+parameters:
+
+services:
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  ANOITCOM\EAVBundle\:
+    resource: '../src/*'
+
+  ANOITCOM\EAVBundle\Doctrine\EAVSchemaFilter:
+    tags: ['doctrine.dbal.schema_filter']
+
+  _instanceof:
+    ANOITCOM\EAVBundle\EAV\ORM\DBAL\ValueTypeInterface:
+      tags: ['ANOITCOM.eav.value.type']
+    ANOITCOM\EAVBundle\EAV\ORM\Persistence\Persister\EAVPersisterInterface:
+      tags: ['ANOITCOM.eav.persister']
+
+  ANOITCOM\EAVBundle\EAV\ORM\DBAL\ValueTypes:
+    arguments:
+      $types: !tagged ANOITCOM.eav.value.type
+
+  ANOITCOM\EAVBundle\EAV\ORM\Persistence\PersistersFactory\EAVPersistersLocator:
+    arguments:
+      $persistersLocator: !tagged_locator { tag: 'ANOITCOM.eav.persister', index_by: 'key', default_index_method: 'getSupportedClass' }

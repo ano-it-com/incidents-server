@@ -1,0 +1,64 @@
+parameters:
+    amqp_dsn: 'amqp://%env(RABBITMQ_USER)%:%env(RABBITMQ_PASS)%@%env(RABBITMQ_HOST)%:%env(RABBITMQ_PORT)%/%%2f'
+
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+        default_bus: notification.bus
+        buses:
+            notification.bus:
+                middleware:
+                    - doctrine_transaction
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+            notification:
+                dsn: '%amqp_dsn%'
+                retry_strategy:
+                    max_retries: 0
+                    # milliseconds delay
+                    delay: 1000
+                    # causes the delay to be higher before each retry
+                    # e.g. 1 second delay, 2 seconds, 4 seconds
+                    multiplier: 2
+                    max_delay: 0
+                    # override all of this with a service that
+                    # implements Symfony\Component\Messenger\Retry\RetryStrategyInterface
+                    # service: null
+                options:
+                    exchange:
+                        name: notification_messages
+                        type: fanout
+                    queues:
+                        'incident.notification_messages': ~
+
+            telegram:
+                dsn: '%amqp_dsn%'
+                retry_strategy:
+                    max_retries: 0
+                    # milliseconds delay
+                    delay: 1000
+                    # causes the delay to be higher before each retry
+                    # e.g. 1 second delay, 2 seconds, 4 seconds
+                    multiplier: 2
+                    max_delay: 0
+                    # override all of this with a service that
+                    # implements Symfony\Component\Messenger\Retry\RetryStrategyInterface
+                    # service: null
+                options:
+                    exchange:
+                        name: telegram_messages
+                        type: fanout
+                    queues:
+                        'incident.telegram_messages': ~
+
+        routing:
+            # Route your messages to the transports
+            # 'App\Message\YourMessage': async
+            'App\Messenger\TelegramMessageInterface': telegram
+
+            'App\Modules\Notification\Messenger\NotificationMessageInterface': notification

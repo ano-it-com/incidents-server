@@ -1,0 +1,14 @@
+services:
+    # Менеджер аккаунтов
+    App\Security\SsoAccountManager: ~
+    SsoBundle\Security\InternalAccountManagerInterface: '@App\Security\SsoAccountManager'
+
+    # Сервис sso авторизации
+    SsoBundle\Services\Auth\SsoAuthService:
+        arguments: [
+                '%env(resolve:SSO_HOST)%',
+                '%env(resolve:SSO_CLIENT_ID)%',
+                '%env(resolve:SSO_SECRET_ID)%',
+                '%env(default::SSO_REDIRECT_URI)%'
+        ]
+    SsoBundle\Services\Auth\SsoAuthServiceInterface: '@SsoBundle\Services\Auth\SsoAuthService'

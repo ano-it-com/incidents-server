@@ -1,0 +1,9 @@
+services:
+  TelegramNotificationBundle\Services\Client\TelegramHttpClient:
+    arguments: [
+        'https://api.telegram.org',
+        '%env(resolve:BOT_TOKEN)%',
+        '@Psr\Log\LoggerInterface'
+    ]
+
+  TelegramNotificationBundle\Services\Client\TelegramClientInterface: '@TelegramNotificationBundle\Services\Client\TelegramHttpClient'

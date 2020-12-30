@@ -1,0 +1,10 @@
+parameters:
+  telegram.messages.path: '%kernel.project_dir%/var/telegram/'
+
+services:
+  TelegramNotificationBundle\Services\Client\TelegramFileClient:
+    arguments: [
+        '%telegram.messages.path%'
+    ]
+
+  TelegramNotificationBundle\Services\Client\TelegramClientInterface: '@TelegramNotificationBundle\Services\Client\TelegramFileClient'

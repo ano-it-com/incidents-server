@@ -1,0 +1,4 @@
+zenstruck_schedule:
+  tasks:
+    -   task: security:invalidate-tokens
+        frequency: '0 1 * * *' # Каждый день в 1:00

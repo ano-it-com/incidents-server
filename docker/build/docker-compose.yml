@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  php:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    build:
+      context: ../../
+      dockerfile: docker/build/php/Dockerfile
+  nginx:
+    image: ${CI_REGISTRY_IMAGE}/nginx:${CI_COMMIT_REF_SLUG}-${VERSION}
+    build:
+      context: nginx
+      args:
+        - PHP_IMAGE=${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+  postgres:
+    image: ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_REF_SLUG}
+    build: postgres
+  rabbitmq:
+    image: ${CI_REGISTRY_IMAGE}/rabbitmq:${CI_COMMIT_REF_SLUG}
+    build: rabbitmq

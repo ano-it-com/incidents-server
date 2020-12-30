@@ -1,0 +1,16 @@
+doctrine:
+  dbal:
+    dbname: test
+    user: '%env(resolve:POSTGRES_USER)%'
+    password: '%env(resolve:POSTGRES_PASSWORD)%'
+    host: '%env(resolve:POSTGRES_HOST)%'
+    driver: 'pdo_pgsql'
+    port: '%env(resolve:POSTGRES_PORT)%'
+
+    # IMPORTANT: You MUST configure your server version,
+    # either here or in the DATABASE_URL env var (see .env file)
+    server_version: '12.10'
+
+    # IMPORTANT: You MUST configure your server version,
+    # either here or in the DATABASE_URL env var (see .env file)
+    #server_version: '5.7'

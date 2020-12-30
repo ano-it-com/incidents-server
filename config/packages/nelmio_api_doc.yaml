@@ -1,0 +1,24 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Документация
+            description:
+            version: 1.0.0
+        servers:
+            - url: http://192.168.17.171/
+              description: Stage
+            - url: http://ims.server.sr/
+              description: Local 1
+            - url: http://127.0.0.1/
+              description: Local 2
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - Bearer: [ ]
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/[^_].*(?!/doc$) # Accepts routes under /api except /api/doc

@@ -1,0 +1,97 @@
+version: '3.4'
+
+services:
+  nginx:
+    image: ${CI_REGISTRY_IMAGE}/nginx:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    depends_on:
+      - php
+    ports:
+      - 80:80
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/bundles:/var/www/html/public/bundles
+  php:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    command: /opt/php-fpm.sh
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${CI_PROTECTED_STAGE_POSTGRES_PASSWORD}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/php:/var/www/html/var
+      - /var/lib/${COMPOSE_PROJECT_NAME}/bundles:/var/www/html/public/bundles
+  postgres:
+    image: ${CI_REGISTRY_IMAGE}/postgres:${CI_COMMIT_REF_SLUG}
+    restart: ${RESTART}
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CI_PROTECTED_STAGE_POSTGRES_PASSWORD}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/postgresql/data:/var/lib/postgresql/data
+  redis:
+    image: "redis:alpine"
+    restart: ${RESTART}
+    command:
+      - 'redis-server'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+  rabbitmq:
+    hostname: 'rabbitmq'
+    image: ${CI_REGISTRY_IMAGE}/rabbitmq:${CI_COMMIT_REF_SLUG}
+    restart: ${RESTART}
+    ports:
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/rabbitmq/data:/var/lib/rabbitmq/
+
+  ##
+  # Schedule
+  ##
+  schedule:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    command: bash -c "/opt/wait-for-it.sh -s -t 0 php:9000 -- /opt/schedule.sh"
+    depends_on:
+      - php
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${CI_PROTECTED_STAGE_POSTGRES_PASSWORD}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/php:/var/www/html/var
+
+  ##
+  # Workers
+  ##
+  worker-notification:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    command: bash -c "/opt/worker.sh notification"
+    depends_on:
+      - php
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${CI_PROTECTED_STAGE_POSTGRES_PASSWORD}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/php:/var/www/html/var
+  worker-telegram:
+    image: ${CI_REGISTRY_IMAGE}/php:${CI_COMMIT_REF_SLUG}-${VERSION}
+    restart: ${RESTART}
+    command: bash -c "/opt/worker.sh telegram"
+    depends_on:
+      - php
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${CI_PROTECTED_STAGE_POSTGRES_PASSWORD}
+    volumes:
+      - /var/lib/${COMPOSE_PROJECT_NAME}/php:/var/www/html/var
